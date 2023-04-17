@@ -15,6 +15,14 @@ npm install
 
 This will install all the necessary dependencies for the project.
 
+Then create a ".env" file in the root of the project and add your own production PORT and develop DEVPORT
+
+Example
+```
+PORT=8080
+DEVPORT=3000
+```
+
 ## Usage
 
 To run the project in development mode, run the following command:

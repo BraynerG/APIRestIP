@@ -1,3 +1,7 @@
+/*
+ * Client paths actions services for the client
+ * Error catch and console debug
+*/
 async function applyPaths(){
     const response = await axios.post('/api/paths/apply')
 

@@ -1,3 +1,7 @@
+/*
+ * This is the API router index to create every not view route
+ * and implement the customs user paths
+*/
 const { Router } = require('express')
 const { createPath, getPaths, editPath, deletePath } = require('../../helpers/Util')
 
@@ -5,25 +9,18 @@ const router = Router()
 
 let customRouter = null
 
+// Create a new path in the DB
 router.post('/paths/create', (req, res) => {
 
     const { txtPathname, txtaResponse, sltType, sltMethod } = req.body
 
     createPath(txtPathname, sltType, sltMethod, txtaResponse)
 
-    /*
-    customRouter = new Router()
-    customRouter.post(txtPathname, (req,res)=>{
-        res.json(txtaResponse)
-    })
-    
-    router.use('/custom', (req,res,next) => customRouter(req,res,next) )
-    */
-
     res.redirect('/dashboard')
 
 })
 
+// Apply DB changes into runtime
 router.post('/paths/apply', (req, res) => {
 
     customRouter = new Router()
@@ -47,7 +44,11 @@ router.post('/paths/apply', (req, res) => {
 
         });
 
-        router.use('/custom', (req, res, next) => customRouter(req, res, next))
+        router.use('/custom', (req, res, next) => customRouter ? customRouter(req, res, next) :
+            ((req, res, next) => {
+                res.status(404).json({ error: 'this custom router is disabled' })
+            })(req, res, next))
+
         res.json({ response: "Succesfully applied" })
 
     } catch (error) {
@@ -56,12 +57,15 @@ router.post('/paths/apply', (req, res) => {
 
 })
 
+
+// Disable custom router paths access 
 router.post('/paths/disable', (req, res) => {
     customRouter = null
 
     res.json({ response: "Succesfully disabled" })
 })
 
+// edit an specific path by ID uploading changes
 router.post('/paths/:id', (req, res) => {
 
     const {
@@ -83,6 +87,7 @@ router.post('/paths/:id', (req, res) => {
     res.redirect('/dashboard')
 })
 
+// delete an specific path by ID
 router.delete('/paths/:id', (req, res) => {
 
     deletePath(req.params.id)
