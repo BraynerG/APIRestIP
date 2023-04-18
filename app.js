@@ -1,6 +1,7 @@
 // Libs imports
 const express = require('express')
 const { engine } = require('express-handlebars')
+const session = require('express-session')
 
 // Env declaration
 require('dotenv').config()
@@ -23,6 +24,11 @@ app.set('views', './src/views')
 app.use(express.static('public'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(session({
+    secret: "This is a secret",
+    resave: false,
+    saveUninitialized: false
+}))
 
 // routers implementation
 app.use('/', pages)
